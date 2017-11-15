@@ -82,7 +82,7 @@ ATTACKER_CAPACITY  = TOTAL_POTENTIAL_NUMBER/6;  %defender最多能插入的bug数
 
 for size_round = 15:80
 
-    PURE_SET_SIZE = size_round
+    PURE_SET_SIZE = size_round;
     pureSetAttacker = zeros(1,TOTAL_POTENTIAL_NUMBER);
     pureSetDefender = zeros(1,TOTAL_POTENTIAL_NUMBER);
     
@@ -126,14 +126,14 @@ for size_round = 15:80
             break;  %收敛，跳出循环
         else
             if(round > PURE_SET_SIZE)  %在对方当前混合策略下，删除一个己方纯策略集合中收益最小的纯策略
-                deleteStrategy(mixedStrategyDefender,mixedStrategyAttacker);
+                deleteStrategy(mixedStrategyDefender,mixedStrategyAttacker,pureSetDefender,pureSetAttacker);
             end
             
             %将双方最优纯策略作为新的一行加入到最优纯策略集合
             pureSetDefender = [pureSetDefender;bestResponseDefender];
             pureSetAttacker = [pureSetAttacker;bestResponseAttacker];
             
-            % fprintf('round = %d, convergeDefender = %d, convergeAttacker = %d\n',round,convergeDefender,convergeAttacker);%未收敛，输出本轮计算结果
+            %         fprintf('round = %d, convergeDefender = %d, convergeAttacker = %d\n',round,convergeDefender,convergeAttacker);%未收敛，输出本轮计算结果
         end
     end  %收敛，跳出循环
     
@@ -141,15 +141,8 @@ for size_round = 15:80
     conv_round(size_round) = round;
 end  
 x = 1:size_round;
-subplot(2,1,1);
-plot(x,conv_time,'-rs');
-legend('conv_time');
-
-subplot(2,1,2);
-plot(x,conv_round,':b^');
-legend('conv_round');
-
-
+plot(x,conv_time,'-rs',x,conv_round,':r^');
+legend('conv time','conv round');
 % %记录收敛结果
 % fprintf('round = %d, convergeDefender = %d, convergeAttacker = %d \n',round,convergeDefender,convergeAttacker);
 % fprintf('Ua(A,d) = %d, Ua(a,d) = %d, Ud(a,D) = %d, Ud(a,d) = %d \n',payoffBestDefender,payoffMixedDefender,payoffBestAttacker,payoffMixedAttacker);

@@ -1,11 +1,13 @@
 %利用minimax计算双方的mixed strategy，输入参数是双方的best response的集合和当前轮数
 function [payoffMixedDefender,payoffMixedAttacker,mixedStrategyDefender,mixedStrategyAttacker] =...
-    computeMixedStrategy(pureSetDefender, pureSetAttacker)
+    computeMixedStrategy()
 %全局变量
 global f;
 global REWARD;
 global MAX_ROUNDS;
 global TOTAL_POTENTIAL_NUMBER;
+global pureSetDefender;
+global pureSetAttacker;
 
 %求解收益矩阵
 payoff = zeros(MAX_ROUNDS,MAX_ROUNDS);%初始化收益计算矩阵，预先分配最大的空间
