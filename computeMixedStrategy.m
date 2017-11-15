@@ -16,7 +16,7 @@ for i = 1:rowD %defender 矩阵左
        for k = 1:TOTAL_POTENTIAL_NUMBER %策略中的元素个数
            pd = 1 - exp(-5 * pureSetDefender(i,k) * pureSetAttacker(j,k));
            pt = 1 - exp(-5 * pureSetDefender(i,k) * f(k));
-           payoff(i,j) = payoff(i,j) + ((1 - pd) * pt * REWARD * f(k));
+           payoff(i,j) = payoff(i,j) + ((1 - pd) * pt * REWARD);
         end
     end
 end

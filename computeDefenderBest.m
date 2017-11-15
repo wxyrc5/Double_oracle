@@ -28,7 +28,7 @@ function y = payFunction(x,i)
 	for j = 1:rowA 
         pd = 1 - exp(-5 * x * pureSetAttacker(j,i));
         pt = 1 - exp(-5 * x * f(i));
-        y = y - ((1 - pd) * pt * REWARD * f(i)) * mixedStrategyAttacker(j);
+        y = y - ((1 - pd) * pt * REWARD) * mixedStrategyAttacker(j);
     end
 end
 

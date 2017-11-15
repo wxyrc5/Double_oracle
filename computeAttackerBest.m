@@ -17,7 +17,7 @@ function  y = payoffFunction(x)
         for j = 1:row
             pd = 1 - exp(-5 * pureSetDefender(j,i) * x(i));
             pt = 1 - exp(-5 * pureSetDefender(j,i) * f(i));
-            y = y + ((1 - pd) * pt * REWARD * f(i)) * mixedStrategyDefender(j);
+            y = y + ((1 - pd) * pt * REWARD) * mixedStrategyDefender(j);
         end
     end
 end
