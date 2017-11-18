@@ -16,7 +16,7 @@ global pureSetAttacker;
 
 REWARD = 10;  %若一个bug被触发，defender获得的收益
 MAX_ROUNDS = 200; %最大轮数，为了预设矩阵的内存空间，也防止死循环
-%PURE_SET_SIZE = 90; %纯策略空间保留纯策略个数
+% PURE_SET_SIZE = 90; %纯策略空间保留纯策略个数
 
 %设置路径形状
 %用程序路径中的交叉点的入度和出度来表示路径之间的关系和限制
@@ -80,11 +80,11 @@ f = [0.6 0.3 0.1 0.1 0.2 0.3 0.15 0.1 0.05 0.07 0.03 0.15...
 TOTAL_POTENTIAL_NUMBER = 24;   %程序中的路径数量，即潜在插入点数量
 ATTACKER_CAPACITY  = TOTAL_POTENTIAL_NUMBER/6;  %defender最多能插入的bug数
 
-for size_round = 15:80
-
-    PURE_SET_SIZE = size_round
-    pureSetAttacker = zeros(1,TOTAL_POTENTIAL_NUMBER);
-    pureSetDefender = zeros(1,TOTAL_POTENTIAL_NUMBER);
+% for size_round = 15:80
+% 
+%     PURE_SET_SIZE = size_round
+%     pureSetAttacker = zeros(1,TOTAL_POTENTIAL_NUMBER);
+%     pureSetDefender = zeros(1,TOTAL_POTENTIAL_NUMBER);
     
     
     %设置attacker初始策略
@@ -97,7 +97,7 @@ for size_round = 15:80
     % bestResponseDefender = [0 0 0.1 0 0.9 0];  %或者任意设置defender的初始策略
     % bestResponseDefender = [0 0.1];
     bestResponseDefender = zeros(1,24);
-    bestResponseDefender(4:7) = 0.5;%或者任意设置defender的初始策略
+    bestResponseDefender(20:23) = 0.5;%或者任意设置defender的初始策略
     pureSetDefender(1,1:TOTAL_POTENTIAL_NUMBER) = bestResponseDefender;
     
     tic;
@@ -125,9 +125,9 @@ for size_round = 15:80
         if ((convergeDefender < 0.001) && (convergeAttacker < 0.001) || (round == MAX_ROUNDS))
             break;  %收敛，跳出循环
         else
-            if(round > PURE_SET_SIZE)  %在对方当前混合策略下，删除一个己方纯策略集合中收益最小的纯策略
-                deleteStrategy(mixedStrategyDefender,mixedStrategyAttacker);
-            end
+%             if(round > PURE_SET_SIZE)  %在对方当前混合策略下，删除一个己方纯策略集合中收益最小的纯策略
+%                 deleteStrategy(mixedStrategyDefender,mixedStrategyAttacker);
+%             end
             
             %将双方最优纯策略作为新的一行加入到最优纯策略集合
             pureSetDefender = [pureSetDefender;bestResponseDefender];
@@ -136,66 +136,66 @@ for size_round = 15:80
             % fprintf('round = %d, convergeDefender = %d, convergeAttacker = %d\n',round,convergeDefender,convergeAttacker);%未收敛，输出本轮计算结果
         end
     end  %收敛，跳出循环
+    toc
+%     conv_time(size_round) = toc; %记录时间
+%     conv_round(size_round) = round;
+% end  
+% x = 1:size_round;
+% subplot(2,1,1);
+% plot(x,conv_time,'-rs');
+% legend('conv_time');
+% 
+% subplot(2,1,2);
+% plot(x,conv_round,':b^');
+% legend('conv_round');
+
+
+%输出收敛结果
+fprintf('round = %d, convergeDefender = %d, convergeAttacker = %d \n',round,convergeDefender,convergeAttacker);
+fprintf('Ua(A,d) = %d, Ua(a,d) = %d, Ud(a,D) = %d, Ud(a,d) = %d \n',payoffBestDefender,payoffMixedDefender,payoffBestAttacker,payoffMixedAttacker);
+
+%绘制结果图像
+x = 1:round;
+plot(x,logDefenderBestPayoff,'-rs',x,logDefenderMixPayoff,':ko',x,-logAttackerBestPayoff,'-.b^');
+legend('defender best','minimax','attacker best'); % 曲线标识
+
+% subplot(2,1,1);
+% plot(x,logDefenderBestPayoff,'-rs',x,logDefenderMixPayoff,':kh');
+% legend('best response  Ud(D,a)','mixed strategy  Ud(d,a)'); % 曲线标识
+% title('Defender'); % 小标题
+% 
+% subplot(2,1,2);
+% plot(x,logAttackerBestPayoff,'-.b^',x, logAttackerMixPayoff,'--k*');
+% legend('best response  Ua(d,A)','mixed strategy  Ua(d,a)'); % 曲线标识
+% title('Attacker'); % 小标题
+
+%记录最终混合策略
+m = 1;
+rowD = size(pureSetDefender,1);
+for i = 1:rowD
+%     %defender
+%     result(i,1:TOTAL_POTENTIAL_NUMBER) = pureSetDefender(i,1:TOTAL_POTENTIAL_NUMBER);%纯策略
+%     result(i,TOTAL_POTENTIAL_NUMBER+2) = roundn(mixedStrategyDefender(i),-4);%混合策略概率
+%     %attacker
+%     result(i,TOTAL_POTENTIAL_NUMBER+4:2*TOTAL_POTENTIAL_NUMBER+3) = pureSetAttacker(i,1:TOTAL_POTENTIAL_NUMBER);
+%     result(i,2*TOTAL_POTENTIAL_NUMBER+5) = roundn(mixedStrategyAttacker(i),-4); 
     
-    conv_time(size_round) = toc; %记录时间
-    conv_round(size_round) = round;
-end  
-x = 1:size_round;
-subplot(2,1,1);
-plot(x,conv_time,'-rs');
-legend('conv_time');
-
-subplot(2,1,2);
-plot(x,conv_round,':b^');
-legend('conv_round');
-
-
-% %记录收敛结果
-% fprintf('round = %d, convergeDefender = %d, convergeAttacker = %d \n',round,convergeDefender,convergeAttacker);
-% fprintf('Ua(A,d) = %d, Ua(a,d) = %d, Ud(a,D) = %d, Ud(a,d) = %d \n',payoffBestDefender,payoffMixedDefender,payoffBestAttacker,payoffMixedAttacker);
-% 
-% %绘制结果图像
-% x = 1:round;
-% plot(x,logDefenderBestPayoff,'-rs',x,logDefenderMixPayoff,':ko',x,-logAttackerBestPayoff,'-.b^');
-% legend('defender best','minimax','attacker best'); % 曲线标识
-% 
-% % subplot(2,1,1);
-% % plot(x,logDefenderBestPayoff,'-rs',x,logDefenderMixPayoff,':kh');
-% % legend('best response  Ud(D,a)','mixed strategy  Ud(d,a)'); % 曲线标识
-% % title('Defender'); % 小标题
-% % 
-% % subplot(2,1,2);
-% % plot(x,logAttackerBestPayoff,'-.b^',x, logAttackerMixPayoff,'--k*');
-% % legend('best response  Ua(d,A)','mixed strategy  Ua(d,a)'); % 曲线标识
-% % title('Attacker'); % 小标题
-% 
-% %记录最终混合策略
-% m = 1;
-% rowD = size(pureSetDefender,1);
-% for i = 1:rowD
-% %     %defender
-% %     result(i,1:TOTAL_POTENTIAL_NUMBER) = pureSetDefender(i,1:TOTAL_POTENTIAL_NUMBER);%纯策略
-% %     result(i,TOTAL_POTENTIAL_NUMBER+2) = roundn(mixedStrategyDefender(i),-4);%混合策略概率
-% %     %attacker
-% %     result(i,TOTAL_POTENTIAL_NUMBER+4:2*TOTAL_POTENTIAL_NUMBER+3) = pureSetAttacker(i,1:TOTAL_POTENTIAL_NUMBER);
-% %     result(i,2*TOTAL_POTENTIAL_NUMBER+5) = roundn(mixedStrategyAttacker(i),-4); 
-%     
-%     if(roundn(mixedStrategyDefender(i),-4) > 0.001)
-%         result(m,1:TOTAL_POTENTIAL_NUMBER) = pureSetDefender(i,1:TOTAL_POTENTIAL_NUMBER);%纯策略
-%         result(m,TOTAL_POTENTIAL_NUMBER+1) = roundn(mixedStrategyDefender(i),-4);%混合策略概率
-%         m = m+1;
-%     end   
-% end
-% m = m+1;
-% rowA = size(pureSetAttacker,1);
-% for i = 1:rowA
-%     if(roundn(mixedStrategyAttacker(i),-4) > 0.001)
-%         result(m,1:TOTAL_POTENTIAL_NUMBER) = pureSetAttacker(i,1:TOTAL_POTENTIAL_NUMBER);%纯策略
-%         result(m,TOTAL_POTENTIAL_NUMBER+1) = roundn(mixedStrategyAttacker(i),-4);%混合策略概率
-%         m = m+1;
-%     end   
-% end
-% fprintf('Done! \n');
+    if(roundn(mixedStrategyDefender(i),-4) > 0.001)
+        result(m,1:TOTAL_POTENTIAL_NUMBER) = pureSetDefender(i,1:TOTAL_POTENTIAL_NUMBER);%纯策略
+        result(m,TOTAL_POTENTIAL_NUMBER+1) = roundn(mixedStrategyDefender(i),-4);%混合策略概率
+        m = m+1;
+    end   
+end
+m = m+1;
+rowA = size(pureSetAttacker,1);
+for i = 1:rowA
+    if(roundn(mixedStrategyAttacker(i),-4) > 0.001)
+        result(m,1:TOTAL_POTENTIAL_NUMBER) = pureSetAttacker(i,1:TOTAL_POTENTIAL_NUMBER);%纯策略
+        result(m,TOTAL_POTENTIAL_NUMBER+1) = roundn(mixedStrategyAttacker(i),-4);%混合策略概率
+        m = m+1;
+    end   
+end
+fprintf('Done! \n');
 
 
 
