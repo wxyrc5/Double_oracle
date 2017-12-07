@@ -44,6 +44,6 @@ AD = payoffMatrix;%不等式左侧
 bD = ones(row,1);%不等式右侧
 lbD = zeros(row,1);%大于零
 [xAttacker,maxAttacker] = linprog(fD,AD,bD,[],[],lbD,[],[],options);
-mixedStrategyAttacker = xAttacker' / -maxAttacker;
+mixedStrategyAttacker = xAttacker / -maxAttacker;
 payoffMixedAttacker = 1 / maxAttacker;
 

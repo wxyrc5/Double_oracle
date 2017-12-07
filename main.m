@@ -11,12 +11,17 @@ global pathRelationPart2;
 global f;
 global pureSetDefender;
 global pureSetAttacker;
+global voteD;
+global voteA;
 pureSetDefender(:,:) = [];
 pureSetAttacker(:,:) = [];
 
 REWARD = 10;  %若一个bug被触发，defender获得的收益
 MAX_ROUNDS = 200; %最大轮数，为了预设矩阵的内存空间，也防止死循环
-% PURE_SET_SIZE = 90; %纯策略空间保留纯策略个数
+PURE_SET_SIZE = 30; %纯策略空间保留纯策略个数
+
+voteD = zeros(PURE_SET_SIZE,1);
+voteA = zeros(PURE_SET_SIZE,1);
 
 %设置路径形状
 %用程序路径中的交叉点的入度和出度来表示路径之间的关系和限制
@@ -42,50 +47,38 @@ pureSetDefender(1,1:TOTAL_POTENTIAL_NUMBER) = bestResponseDefender;
 
 logMixedStrategyDefender = zeros(MAX_ROUNDS);
 logMixedStrategyAttacker = zeros(MAX_ROUNDS);
-avelogMixedStrategyDefender = logMixedStrategyDefender;
-avelogMixedStrategyAttacker = logMixedStrategyAttacker;
 %主循环，直至收敛
 tic;
-for round = 1:MAX_ROUNDS
-    
+for round = 1:MAX_ROUNDS    
     %通过对最优纯策略集合进行minimax求解，求出双方最优混合策略
     [payoffMixedDefender,payoffMixedAttacker,mixedStrategyDefender,mixedStrategyAttacker] = computeMixedStrategy();
     mixedStrategyDefender = roundn(mixedStrategyDefender,-4); 
     mixedStrategyAttacker = roundn(mixedStrategyAttacker,-4);
+    logDefenderMixPayoff(round) = payoffMixedDefender;
     
     %计算双方最优纯策略
     [bestResponseDefender,payoffBestDefender] = computeDefenderBest(mixedStrategyAttacker);
     [bestResponseAttacker,payoffBestAttacker] = computeAttackerBest(mixedStrategyDefender);
     bestResponseDefender = roundn(bestResponseDefender,-4);
     bestResponseAttacker = roundn(bestResponseAttacker,-4);
+    logDefenderBestPayoff(round) = payoffBestDefender;
+    logAttackerBestPayoff(round) = payoffBestAttacker;
     
     %记录mixed strategy
-    logMixedStrategyDefender(1:round,round*2-1) = mixedStrategyDefender; 
-    logMixedStrategyAttacker(1:round,round*2-1) = mixedStrategyAttacker; 
-    
-    totallogMixedStrategyDefender = sum(logMixedStrategyDefender,2);%将每行相加
-    totallogMixedStrategyAttacker = sum(logMixedStrategyAttacker,2);
-    for i = 1:round  %对每一行求平均
-        avelogMixedStrategyDefender(i,round*2) = totallogMixedStrategyDefender(i)/(round-i+1);
-        avelogMixedStrategyAttacker(i,round*2) = totallogMixedStrategyAttacker(i)/(round-i+1);
-    end
-%     %记录minimax收益
-%     logDefenderMixPayoff(round) = payoffMixedDefender;
-%     logAttackerMixPayoff(round) = payoffMixedAttacker;
-%     %记录best收益
-%     logDefenderBestPayoff(round) = payoffBestDefender;
-%     logAttackerBestPayoff(round) = payoffBestAttacker;
-    
-    %判断收敛
+%     logMixedStrategyDefender(1:round,round) = mixedStrategyDefender;
+%     logMixedStrategyAttacker(1:round,round) = mixedStrategyAttacker;
+
     %在对方采取mixed srategy时，双方各自的best response获得的收益没有mixed srategy获得的收益大时，即为收敛
     convergeDefender = payoffBestDefender - payoffMixedDefender;
     convergeAttacker = payoffBestAttacker - payoffMixedAttacker;
-    if ((convergeDefender < 0.05) && (convergeAttacker < 0.05) || (round == MAX_ROUNDS))
+    if ((convergeDefender < 0.01) && (convergeAttacker < 0.01) || (round == MAX_ROUNDS))
         break;  %收敛，跳出循环
     else
-%         if(round > PURE_SET_SIZE)  %在对方当前混合策略下，删除一个己方纯策略集合中收益最小的纯策略
-%             deleteStrategy(mixedStrategyDefender,mixedStrategyAttacker);
-%         end
+        if(round >= PURE_SET_SIZE)  
+%               payoffDelete(mixedStrategyDefender,mixedStrategyAttacker);%在对方当前混合策略下，删除一个己方纯策略集合中收益最小的纯策略
+%               voteDelete(PURE_SET_SIZE,mixedStrategyDefender,mixedStrategyAttacker); %统计票数,删除票数最少的纯策略
+%               probaDelete(mixedStrategyDefender,mixedStrategyAttacker); %按照混合策略中概率排序，删除最小的纯策略
+        end
         
         %将双方最优纯策略作为新的一行加入到最优纯策略集合
         pureSetDefender = [pureSetDefender;bestResponseDefender];
@@ -101,6 +94,4 @@ fprintf('round = %d, convergeDefender = %d, convergeAttacker = %d \n',round,conv
 fprintf('Ua(A,d) = %d, Ua(a,d) = %d, Ud(a,D) = %d, Ud(a,d) = %d \n',payoffBestDefender,payoffMixedDefender,payoffBestAttacker,payoffMixedAttacker);
 
 %处理结果
-% resultProcess(round,logDefenderBestPayoff,logDefenderMixPayoff,logAttackerBestPayoff,mixedStrategyDefender,mixedStrategyAttacker);
-logMixedStrategyDefender = logMixedStrategyDefender + avelogMixedStrategyDefender;
-logMixedStrategyAttacker = logMixedStrategyAttacker + avelogMixedStrategyAttacker;
+result = resultProcess(round,logDefenderBestPayoff,logDefenderMixPayoff,logAttackerBestPayoff,mixedStrategyDefender,mixedStrategyAttacker);

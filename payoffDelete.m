@@ -1,4 +1,4 @@
-function deleteStrategy(mixedStrategyDefender,mixedStrategyAttacker)
+function payoffDelete(mixedStrategyDefender,mixedStrategyAttacker)
 
 global TOTAL_POTENTIAL_NUMBER;
 global f;
@@ -38,10 +38,10 @@ for i = 1:rowD
     attackerMaxPayoff(i) = payoffBestAttacker;
 end
 
-[~,posDefender] = min(defenderMaxPayoff);%用min找到defender的payoff最小的纯策略
-[~,posAttacker] = min(attackerMaxPayoff);%用min找到attacker的payoff最小的纯策略
+[~,lineD] = min(defenderMaxPayoff);%用min找到defender的payoff最小的纯策略
+[~,lineA] = min(attackerMaxPayoff);%用min找到attacker的payoff最小的纯策略
 
-pureSetDefender(posDefender,:) = [];%删除最小的纯策略
-pureSetAttacker(posAttacker,:) = [];
+pureSetDefender(lineD,:) = [];%删除最小的纯策略
+pureSetAttacker(lineA,:) = [];
 
 
