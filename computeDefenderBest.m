@@ -42,17 +42,5 @@ for k = 1:ATTACKER_CAPACITY
     payoffBestDefender = payoffBestDefender + maxPayoff;%计算获得的payoff
 end
 
-% %计算Ud(D,a)
-% rowA = size(pureSetAttacker,1);
-% payoffBestDefender = 0;
-% for i = 1:rowA %attacker的纯策略个数
-%     payoffBestD = 0;
-%     for k = 1:TOTAL_POTENTIAL_NUMBER %defedner纯策略中的元素个数
-%         pd = 1 - exp(-5 * bestResponseDefender(k) * pureSetAttacker(i,k));
-%         pt = 1 - exp(-5 * bestResponseDefender(k) * f(k));
-%         payoffBestD = payoffBestD + (1 - pd) * pt * REWARD;
-%     end
-%     payoffBestDefender = payoffBestDefender + payoffBestD * mixedStrategyAttacker(i);
-% end
 end
 

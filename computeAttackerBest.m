@@ -33,20 +33,6 @@ options=optimset('display','off');%隐藏求解成功信息
 bestResponseAttacker = best';
 maxPayoffAttacker = - maxPayoff;
 
-
-% %计算Ua(d,A)
-% row = size(pureSetDefender,1);
-% maxPayoffAttacker = 0;
-% for l = 1:row %defender的纯策略个数
-%     maxPayoffA = 0;
-%     for k = 1:TOTAL_POTENTIAL_NUMBER %defender纯策略中的元素个数
-%         pd = 1 - exp(-5 * pureSetDefender(l,k) * bestResponseAttacker(k));
-%         pt = 1 - exp(-5 * pureSetDefender(l,k) * f(k));
-%         maxPayoffA = maxPayoffA - (1 - pd) * pt * REWARD;
-%     end
-%     maxPayoffAttacker = maxPayoffAttacker + maxPayoffA * mixedStrategyDefender(l);
-% end
-
 end
 
 

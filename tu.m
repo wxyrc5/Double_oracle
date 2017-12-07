@@ -27,25 +27,13 @@
 % % y = (a./(a+f)).^(a./f) .* (f./(a+f));
 % % plot(a,y)
 % 
-% clear all;
-% d = 0:0.001:1;
-% a = 0.3;
-% f = 0.6;
-% y = exp(-5 .* d * a) .* (1 - exp(-2 .* d * f));
-% % hold on;
-% plot(d,y)
-clc;
-close all;
+clear all;
+d = 0:0.001:1;
+a = 0.9;
+f = 0.9;
+y = exp(-5 .* d * a) .* (1 - exp(-5 .* d * f));
+% hold on;
+plot(d,y)
 
-for size_round = 1:10
-    PURE_SET_SIZE = 10 + size_round * 5;
-    [convTime,convRound] = main(PURE_SET_SIZE);
-        
-    my_time(size_round) = convTime; %记录运行时间
-    my_round(size_round) = convRound;
-end
 
-x = 1:size_round;
-plot(x,my_time,'-rs',x,my_round,':r^');
-legend('conv time','conv round');
 
