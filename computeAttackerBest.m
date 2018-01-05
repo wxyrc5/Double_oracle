@@ -2,18 +2,18 @@
 function [bestResponseAttacker,maxPayoffAttacker] = computeAttackerBest(mixedStrategyDefender)
 
 %全局变量
-global TOTAL_POTENTIAL_NUMBER;
+global baseBlockNumber;
 global f;
 global REWARD;
-global pathRelationPart1;
-global pathRelationPart2;
+global cfgRelation1;
+global cfgRelation2;
 global pureSetDefender;
 
 %attacker的收益，目标函数
 function  y = payoffFunction(x)
     y = 0;
     row = size(pureSetDefender,1);
-    for i = 1:TOTAL_POTENTIAL_NUMBER
+    for i = 1:baseBlockNumber
         for j = 1:row
             pd = 1 - exp(-5 * pureSetDefender(j,i) * x(i));
             pt = 1 - exp(-5 * pureSetDefender(j,i) * f(i));
@@ -22,11 +22,11 @@ function  y = payoffFunction(x)
     end
 end
 
-x0 = zeros(TOTAL_POTENTIAL_NUMBER,1);%x的初始值
-Aeq = pathRelationPart1;%等式左边
-Beq = pathRelationPart2;%等式右边
-lb = zeros(TOTAL_POTENTIAL_NUMBER,1);%x的下限值
-ub = ones(TOTAL_POTENTIAL_NUMBER,1);%x的上限值
+x0 = zeros(baseBlockNumber,1);%x的初始值
+Aeq = cfgRelation1;%等式左边
+Beq = cfgRelation2;%等式右边
+lb = zeros(baseBlockNumber,1);%x的下限值
+ub = ones(baseBlockNumber,1);%x的上限值
 options=optimset('display','off');%隐藏求解成功信息
 %求最值
 [best,maxPayoff] = fmincon(@(x)payoffFunction(x),x0,[],[],Aeq,Beq,lb,ub,[],options);%求最小值

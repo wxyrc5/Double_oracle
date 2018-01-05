@@ -1,7 +1,7 @@
 function result = resultProcess(round,logDefenderBestPayoff,logDefenderMixPayoff,logAttackerBestPayoff,mixedStrategyDefender,mixedStrategyAttacker)
 global pureSetDefender;
 global pureSetAttacker;
-global TOTAL_POTENTIAL_NUMBER;
+global baseBlockNumber;
 
 %绘制结果图像
 x = 1:round;
@@ -13,8 +13,8 @@ m = 1;
 rowD = size(pureSetDefender,1);
 for i = 1:rowD
     if(roundn(mixedStrategyDefender(i),-4) > 0.001)
-        result(m,1:TOTAL_POTENTIAL_NUMBER) = pureSetDefender(i,1:TOTAL_POTENTIAL_NUMBER);%纯策略
-        result(m,TOTAL_POTENTIAL_NUMBER+1) = roundn(mixedStrategyDefender(i),-4);%混合策略概率
+        result(m,1:baseBlockNumber) = pureSetDefender(i,1:baseBlockNumber);%纯策略
+        result(m,baseBlockNumber+1) = roundn(mixedStrategyDefender(i),-4);%混合策略概率
         m = m+1;
     end
 end
@@ -22,8 +22,8 @@ m = m+1;
 rowA = size(pureSetAttacker,1);
 for i = 1:rowA
     if(roundn(mixedStrategyAttacker(i),-4) > 0.001)
-        result(m,1:TOTAL_POTENTIAL_NUMBER) = pureSetAttacker(i,1:TOTAL_POTENTIAL_NUMBER);%纯策略
-        result(m,TOTAL_POTENTIAL_NUMBER+1) = roundn(mixedStrategyAttacker(i),-4);%混合策略概率
+        result(m,1:baseBlockNumber) = pureSetAttacker(i,1:baseBlockNumber);%纯策略
+        result(m,baseBlockNumber+1) = roundn(mixedStrategyAttacker(i),-4);%混合策略概率
         m = m+1;
     end
 end
@@ -32,11 +32,11 @@ end
 % rowD = size(pureSetDefender,1);
 % for i = 1:rowD
 %         %defender
-%         result(i,1:TOTAL_POTENTIAL_NUMBER) = pureSetDefender(i,1:TOTAL_POTENTIAL_NUMBER);%纯策略
-%         result(i,TOTAL_POTENTIAL_NUMBER+2) = roundn(mixedStrategyDefender(i),-4);%混合策略概率
+%         result(i,1:baseBlockNumber) = pureSetDefender(i,1:baseBlockNumber);%纯策略
+%         result(i,baseBlockNumber+2) = roundn(mixedStrategyDefender(i),-4);%混合策略概率
 %         %attacker
-%         result(i,TOTAL_POTENTIAL_NUMBER+4:2*TOTAL_POTENTIAL_NUMBER+3) = pureSetAttacker(i,1:TOTAL_POTENTIAL_NUMBER);
-%         result(i,2*TOTAL_POTENTIAL_NUMBER+5) = roundn(mixedStrategyAttacker(i),-4);
+%         result(i,baseBlockNumber+4:2*baseBlockNumber+3) = pureSetAttacker(i,1:baseBlockNumber);
+%         result(i,2*baseBlockNumber+5) = roundn(mixedStrategyAttacker(i),-4);
 % end
 
 

@@ -5,7 +5,7 @@ function [payoffMixedDefender,payoffMixedAttacker,mixedStrategyDefender,mixedStr
 global f;
 global REWARD;
 global MAX_ROUNDS;
-global TOTAL_POTENTIAL_NUMBER;
+global baseBlockNumber;
 global pureSetDefender;
 global pureSetAttacker;
 
@@ -15,7 +15,7 @@ rowD = size(pureSetDefender,1);
 rowA = size(pureSetAttacker,1);
 for i = 1:rowD %defender 矩阵左
     for j = 1:rowA %attacker 矩阵上
-       for k = 1:TOTAL_POTENTIAL_NUMBER %策略中的元素个数
+       for k = 1:baseBlockNumber %策略中的元素个数
            pd = 1 - exp(-5 * pureSetDefender(i,k) * pureSetAttacker(j,k));
            pt = 1 - exp(-5 * pureSetDefender(i,k) * f(k));
            payoff(i,j) = payoff(i,j) + ((1 - pd) * pt * REWARD);
