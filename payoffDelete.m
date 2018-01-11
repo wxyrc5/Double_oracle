@@ -1,6 +1,6 @@
 function payoffDelete(mixedStrategyDefender,mixedStrategyAttacker)
 
-global baseBlockNumber;
+global blockNumber;
 global f;
 global REWARD;
 global pureSetDefender;
@@ -14,7 +14,7 @@ for i = 1:rowD
     payoffBestDefender = 0;
     for j = 1:rowA %attacker的纯策略个数
         payoffBestD = 0;
-        for k = 1:baseBlockNumber %defender纯策略中的元素个数
+        for k = 1:blockNumber %defender纯策略中的元素个数
             pd = 1 - exp(-5 * pureSetDefender(i,k) * pureSetAttacker(j,k));
             pt = 1 - exp(-5 * pureSetDefender(i,k) * f(k));
             payoffBestD = payoffBestD + (1 - pd) * pt * REWARD;
@@ -28,7 +28,7 @@ for i = 1:rowD
     payoffBestAttacker = 0;
     for j = 1:rowD %defender的纯策略个数
         payoffBestA = 0;
-        for k = 1:baseBlockNumber %defender纯策略中的元素个数
+        for k = 1:blockNumber %defender纯策略中的元素个数
             pd = 1 - exp(-5 * pureSetDefender(j,k) * pureSetAttacker(i,k));
             pt = 1 - exp(-5 * pureSetDefender(j,k) * f(k));
             payoffBestA = payoffBestA - (1 - pd) * pt * REWARD;

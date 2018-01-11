@@ -5,16 +5,16 @@
 function [bestResponseDefender,payoffBestDefender] = computeDefenderBest(mixedStrategyAttacker)
 
 %全局变量
-global baseBlockNumber;
+global blockNumber;
 global f;
 global REWARD;
 global ATTACKER_CAPACITY;
 global pureSetAttacker;
 
-payoffSet = zeros(1,baseBlockNumber);
-xSet = zeros(1,baseBlockNumber);
+payoffSet = zeros(1,blockNumber);
+xSet = zeros(1,blockNumber);
 options=optimset('display','off');%隐藏求解成功信息
-for i = 1:baseBlockNumber  %对每一个潜在插入点，求该潜在插入点可获得的最大收益
+for i = 1:blockNumber  %对每一个潜在插入点，求该潜在插入点可获得的最大收益
  	[xmax,payoffmax]=fminbnd(@(x)payFunction(x,i),0,1,options);
 	payoffSet(i) = - payoffmax;%每个潜在插入点可获得的最大payoff
     xSet(i) = xmax;%可以使每个潜在插入点获得最大收益的插入深度
@@ -33,7 +33,7 @@ function y = payFunction(x,i)
 end
 
 %对所有潜在插入点可获得的最大payoff进行排序,选出前n大的潜在插入点
-bestResponseDefender(1:baseBlockNumber) = 0;%初始化defender的best response
+bestResponseDefender(1:blockNumber) = 0;%初始化defender的best response
 payoffBestDefender = 0;
 for k = 1:ATTACKER_CAPACITY
 	[maxPayoff,position] = max(payoffSet);%找到最大的值的位置
